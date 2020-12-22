@@ -36,6 +36,50 @@ add_library(mbed-os-static STATIC ${MBED_SOURCE_FILES})
 target_compile_options(mbed-os-static PUBLIC ${MBED_COMPILE_OPTIONS})
 target_include_directories(mbed-os-static PUBLIC ${MBED_INCLUDE_DIRS})
 
+# WAMR
+# ------------------------------------------------------------
+enable_language (ASM)
+
+set (WAMR_BUILD_PLATFORM "mbed")
+
+# Build as X86_32 by default, change to "AARCH64[sub]", "ARM[sub]", "THUMB[sub]", "MIPS" or "XTENSA"
+# if we want to support arm, thumb, mips or xtensa
+if (NOT DEFINED WAMR_BUILD_TARGET)
+  #set (WAMR_BUILD_TARGET "X86_32")
+  set (WAMR_BUILD_TARGET "THUMB")
+endif ()
+
+if (NOT DEFINED WAMR_BUILD_INTERP)
+  # Enable Interpreter by default
+  set (WAMR_BUILD_INTERP 1)
+endif ()
+
+if (NOT DEFINED WAMR_BUILD_AOT)
+  # Enable AOT by default.
+  set (WAMR_BUILD_AOT 1)
+endif ()
+
+if (NOT DEFINED WAMR_BUILD_LIBC_BUILTIN)
+  # Enable libc builtin support by default
+  set (WAMR_BUILD_LIBC_BUILTIN 1)
+endif ()
+
+if (NOT DEFINED WAMR_BUILD_LIBC_WASI)
+  # Disable libc wasi support by default
+  set (WAMR_BUILD_LIBC_WASI 0)
+endif ()
+
+set (WAMR_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../wamr)
+include (${WAMR_ROOT_DIR}/build-scripts/runtime_lib.cmake)
+
+# recurse to subdirectories
+# -------------------------------------------------------------
+
+target_sources(mbed-os-static  
+    PRIVATE ${WAMR_RUNTIME_LIB_SOURCE}
+)
+
+
 # make sure linker script gets built before anything trying to use mbed-os
 add_dependencies(mbed-os-static mbed-linker-script)
 
