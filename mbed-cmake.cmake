@@ -141,7 +141,7 @@ endif()
 # -------------------------------------------------------------
 
 set(MBED_CMAKE_CONFIG_HEADERS_PATH ${MBED_CMAKE_GENERATED_CONFIG_PATH}/config-headers)
-add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/mbed-src) #first get Mbed standard library
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/mbed-src/ ${CMAKE_CURRENT_LIST_DIR}/mbed-src/build) #first get Mbed standard library
 
 # build report
 # -------------------------------------------------------------
